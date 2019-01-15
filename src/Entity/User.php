@@ -140,5 +140,9 @@ class User implements UserInterface
     {
         return $this->email;
     }
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
 
 }
