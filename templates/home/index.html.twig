@@ -10,7 +10,24 @@
                 {% if i.id == null %}
                     <p>Pas de vidéo</p>
                 {% else %}
-                    <p>Les vidéos sont:</p>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Lien</th>
+                        <th>Date de création</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ i.title }}</td>
+                        <td>{{ i.description }}</td>
+                        <td><a href="{{ i.url }}">{{ i.url }}</a></td>
+                        <td>{{ i.dateCreation.date }}</td>
+                    </tr>
+                </tbody>
+            </table>
                 {% endif %}
             {% endfor %}
         </div>
