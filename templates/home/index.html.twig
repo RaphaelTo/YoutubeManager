@@ -3,9 +3,16 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
-
-
-<div class="container">
-    <h1>Bienvenue sur la page</h1>
-</div>
+    <div class="container">
+        <div class="starter-template">
+            <h1>Bienvenue sur la page</h1>
+            {% for i in video %}
+                {% if i.id == null %}
+                    <p>Pas de vidéo</p>
+                {% else %}
+                    <p>Les vidéos sont:</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
