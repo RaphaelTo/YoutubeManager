@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VideoRepository")
@@ -42,6 +43,12 @@ class Video
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="video")
      */
     private $category;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     */
+    private $iframe;
 
     public function __construct()
     {
@@ -126,4 +133,13 @@ class Video
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIframe()
+    {
+        return $this->iframe;
+    }
+
 }
