@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Les videos de la catégorie</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Description</th>
+                    <th>URL</th>
+                    <th>Date de création</th>
+                    <th>Auteur</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in cat %}
+
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ dump(cat) }}
+    </div>
+
+{% endblock %}

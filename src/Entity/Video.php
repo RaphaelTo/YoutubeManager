@@ -21,6 +21,7 @@ class Video
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $title;
 
@@ -31,29 +32,37 @@ class Video
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Url()
      */
     private $url;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\DateTime()
      */
     private $dateCreation;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="video")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="videos")
      */
-    private $category;
+     private $category;
+
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @Assert\Url()
      */
     private $iframe;
 
-    public function __construct()
-    {
-        $this->category = new ArrayCollection();
-    }
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="videos")
+     */
+    private $user;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $published;
 
     public function getId(): ?int
     {
@@ -89,6 +98,7 @@ class Video
         return $this->url;
     }
 
+
     public function setUrl(string $url): self
     {
         $this->url = $url;
@@ -107,33 +117,6 @@ class Video
 
         return $this;
     }
-
-    /**
-     * @return Collection|Category[]
-     */
-    public function getCategory(): Collection
-    {
-        return $this->category;
-    }
-
-    public function addCategory(Category $category): self
-    {
-        if (!$this->category->contains($category)) {
-            $this->category[] = $category;
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        if ($this->category->contains($category)) {
-            $this->category->removeElement($category);
-        }
-
-        return $this;
-    }
-
     /**
      * @return mixed
      */
@@ -141,5 +124,60 @@ class Video
     {
         return $this->iframe;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $iframe
+     */
+    public function setIframe($iframe): void
+    {
+        $this->iframe = $iframe;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param mixed $category
+     */
+    public function setCategory($category): void
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPublished()
+    {
+        return $this->published;
+    }
+
+    /**
+     * @param mixed $published
+     */
+    public function setPublished($published): void
+    {
+        $this->published = $published;
+    }
+
+
+
 
 }

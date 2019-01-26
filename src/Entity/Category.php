@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,62 +17,71 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Video", mappedBy="category")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private $video;
+    private $description;
 
-    public function __construct()
-    {
-        $this->video = new ArrayCollection();
-    }
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="category")
+     */
+    private $videos;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    /**
+     * @return mixed
+     */
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    /**
+     * @param mixed $name
+     */
+    public function setName($name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     /**
-     * @return Collection|Video[]
+     * @return mixed
      */
-    public function getVideo(): Collection
+    public function getVideos()
     {
-        return $this->video;
+        return $this->videos;
     }
 
-    public function addVideo(Video $video): self
+    /**
+     * @param mixed $videos
+     */
+    public function setVideos($videos): void
     {
-        if (!$this->video->contains($video)) {
-            $this->video[] = $video;
-            $video->addCategory($this);
-        }
-
-        return $this;
+        $this->videos = $videos;
     }
 
-    public function removeVideo(Video $video): self
+    /**
+     * @return mixed
+     */
+    public function getDescription()
     {
-        if ($this->video->contains($video)) {
-            $this->video->removeElement($video);
-            $video->removeCategory($this);
-        }
-
-        return $this;
+        return $this->description;
     }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description): void
+    {
+        $this->description = $description;
+    }
+
 }

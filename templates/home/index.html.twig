@@ -1,15 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="starter-template">
             <h1>Bienvenue sur la page</h1>
-            {% for i in video %}
-                {% if i.id == null %}
-                    <p>Pas de vidéo</p>
-                {% else %}
+
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -17,19 +14,48 @@
                         <th>Description</th>
                         <th>Lien</th>
                         <th>Date de création</th>
+                        <th>Catégorie</th>
+                        <th>Vidéo ajouté par</th>
+                        <th>Supprimer</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>{{ i.title }}</td>
-                        <td>{{ i.description }}</td>
-                        <td><a href="{{ i.url }}">{{ i.url }}</a></td>
-                        <td>{{ i.dateCreation.date }}</td>
-                    </tr>
+                {% for i in video %}
+                    {% if i.published == true %}
+                        <tr>
+                            <td><a href="{{ path('detailVideo',{'id':i.id}) }}">{{ i.title }}</a></td>
+                            <td>{{ i.description }}</td>
+                            <td><a href="{{ i.url }}">{{ i.url }}</a></td>
+                            <td>{{ i.dateCreation.date }}</td>
+                            <td><a href="{{ path('categoryId',{'category':i.category.id}) }}">{{ i.category.name }}</a></td>
+                            <td><a href="{{ path('profileId', {'id':i.user.id}) }}">{{ i.user.firstname }}</a></td>
+                            {%  if is_granted('IS_AUTHENTICATED_FULLY') and app.user.id == i.user.id  %}
+                                <td><a href="{{ path('deleteVideo', {'id': i.id}) }}">Supprimer</a></td>
+                            {%  else %}
+                                <td>Impossible de supprimer vu que vous n'êtes pas le créateur</td>
+                            {% endif %}
+                            {{ dump(i) }}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
                 </tbody>
             </table>
-                {% endif %}
-            {% endfor %}
+
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in cat %}
+                        <tr>
+                            <td><a href="{{ path('categoryId', {'category':p.id}) }}">{{ p.name }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

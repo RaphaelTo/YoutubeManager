@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Form\LoginUserType;
+use App\Form\ProfileUserType;
+use App\Repository\UserRepository;
+use App\Repository\VideoRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,5 +53,45 @@ class SecurityController extends AbstractController
             'form'=> $form->createView()
         ]);
 
+    }
+
+    /**
+     * @Route("/profile/{id}", name="profileId")
+     */
+    public function viewProfile(int $id, UserRepository $userRepository){
+        $user = $userRepository->find($id);
+        return $this->render('profile/profile.html.twig', [
+            'user'=>$user
+        ]);
+    }
+
+    /**
+     * @Route("/profile", name="myProfile")
+     */
+    public function myProfile(Request $request, EntityManagerInterface $entityManager){
+        $user = $this->getUser();
+        $form = $this->createForm(ProfileUserType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('profile/myProfile.html.twig', [
+           'form'=> $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin", name="allUser")
+     */
+    public function allUser(UserRepository $userRepository, VideoRepository $videoRepository){
+        $user = $userRepository->findAll();
+        $video = $videoRepository->findAll();
+        return $this->render('admin/allUser.html.twig', [
+           'user' => $user,
+            'video'=>$video
+        ]);
     }
 }

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Prenom</th>
+                    <th>Nom</th>
+                    <th>Anniversaire</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Nom des vidéos postées et publié ou pas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in user %}
+                    <tr>
+                        {% if(i.firstname == null) %}
+                            <td>pas précisé</td>
+                        {% else %}
+                            <td>{{ i.firstname}}</td>
+                        {% endif %}
+                        {% if(i.lastname == null) %}
+                            <td>pas précisé</td>
+                        {% else %}
+                            <td>{{ i.lastname }}</td>
+                        {% endif %}
+                        {% if(i.birthday == null) %}
+                            <td>pas précisé</td>
+                        {% else %}
+                            <td>{{ i.birthday.date }}</td>
+                        {% endif %}
+                        <td>{{ i.email }}</td>
+                        {%  if(i.roles|length < 2) %}
+                            <td>{{ i.roles[0] }}</td>
+                        {% else %}
+                            <td>{{ i.roles[0] }} {{ i.roles[1] }}</td>
+                        {% endif %}
+                        <td>
+                            <ul>
+                        {% for p in video %}
+                            {% if i.id == p.user.id %}
+                                {% if p.published == true %}
+                                    <li>{{ p.title }} <b>et vidéo publié</b></li>
+                                    {% else %}
+                                        <li>{{ p.title }} <b>et vidéo non publié</b></li>
+                                    {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

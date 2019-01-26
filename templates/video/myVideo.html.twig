@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>URL</th>
+                    <th>Date de création</th>
+                    <th>Catégorie</th>
+                    <th>Publié ou pas</th>
+                    <th>Modifier</th>
+                    <th>Supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+            {%  for i in videoUser %}
+                {{ dump(i) }}
+                <tr>
+                    <td><a href="{{ path('detailVideo',{'id':i.id}) }}">{{ i.title }}</a></td>
+                    <td>{{ i.description }}</td>
+                    <td><a href="{{ i.url }}">{{ i.url }}</a></td>
+                    <td>{{ i.dateCreation.date }}</td>
+                    <td>{{ i.category.name }}</td>
+                    {% if i.published == true %}
+                        <td>Publié</td>
+                    {% else %}
+                        <td>Non publié</td>
+                    {% endif %}
+                    <td><a href="{{ path('updateVideo', {'id':i.id}) }}">Modifier</a></td>
+                    <td><a href="{{ path('deleteVideo', {'id':i.id}) }}">Supprimer</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

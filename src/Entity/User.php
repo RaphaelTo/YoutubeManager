@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,14 +20,14 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $lastname;
 
@@ -37,6 +39,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column()
+     * @Assert\NotBlank
      */
     private $password;
 
@@ -51,10 +54,17 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video", mappedBy="user")
+     * @Assert\NotBlank
+     */
+    private $videos;
 
     public function __construct()
     {
         $this->roles = array('ROLE_USER');
+        $this->video = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
 
@@ -143,9 +153,46 @@ class User implements UserInterface
     {
         return $this->email;
     }
+
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
     }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->contains($video)) {
+            $this->videos->removeElement($video);
+            // set the owning side to null (unless already changed)
+            if ($video->getUser() === $this) {
+                $video->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
 
 }

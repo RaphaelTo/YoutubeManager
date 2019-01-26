@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container">
+
+    <h1>Vous êtes sur le profil de {{ user.firstname }}  {{ user.lastname }}</h1>
+    <h2>Il est né(e) le {{ user.birthday.date }}</h2>
+    <h2>Et son email c'est {{ user.email }}</h2>
+</div>
+
+{% endblock %}
