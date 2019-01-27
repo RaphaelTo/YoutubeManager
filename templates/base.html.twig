@@ -32,17 +32,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('myProfile') }}">My profile</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ path('myVideo') }}" class="nav-link">My videos</a>
-                    </li>
-                    {% if(app.user.roles[1]) %}
+                    {% if(app.user.roles[0] == "ROLE_ADMIN") %}
+                        <li class="nav-item">
+                            <a href="{{ path('myVideo') }}" class="nav-link">All videos</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('allUser') }}">All User</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('detailCategory') }}">All detail category</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ path('addCategory') }}" class="nav-link">Add category</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{ path('myVideo') }}" class="nav-link">My videos</a>
+                        </li>
                     {% endif %}
+
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
@@ -58,7 +66,13 @@
         </div>
     </div>
 </nav>
-
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-{{ label }}">
+            {{ message }}
+            </div>
+    {% endfor %}
+{% endfor %}
 
 {% block body %}
 

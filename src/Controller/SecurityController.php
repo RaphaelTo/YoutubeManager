@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 use App\Form\RegisterUserType;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class SecurityController extends AbstractController
 {
@@ -33,6 +34,7 @@ class SecurityController extends AbstractController
             $entityManager=$this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
+            $this->addFlash('notice', 'has been created');
             return $this->redirectToRoute('home');
         }
 
@@ -50,7 +52,7 @@ class SecurityController extends AbstractController
 
         return $this->render('security/login.html.twig', [
             'error'=> $authenticationUtils->getLastAuthenticationError(),
-            'form'=> $form->createView()
+            'form'=> $form->createView(),
         ]);
 
     }
@@ -76,6 +78,7 @@ class SecurityController extends AbstractController
         if($form->isSubmitted() && $form->isValid()){
             $entityManager->persist($user);
             $entityManager->flush();
+            $this->addFlash('notice', 'Your modification has been changed');
             return $this->redirectToRoute('home');
         }
         return $this->render('profile/myProfile.html.twig', [
@@ -93,5 +96,36 @@ class SecurityController extends AbstractController
            'user' => $user,
             'video'=>$video
         ]);
+    }
+
+    /**
+     * @Route("/admin/{id}", name="idAdminUpdate")
+     */
+    public function updateAdminId(int $id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository){
+        $user = $userRepository->find($id);
+        $form = $this->createForm(ProfileUserType::class, $user);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('admin/updateAdminById.html.twig', [
+            'form'=> $form->createView()
+        ]);
+    }
+    /**
+     * @Route("/admin/delete/{id}",name="deleteUser")
+     */
+    public function deleteUser(User $user, EntityManagerInterface $entityManager){
+        $video = $user->getVideos();
+        foreach ($video as $videos){
+            $videos->setUser(null);
+        }
+        $entityManager->remove($user);
+        $entityManager->flush();
+        $this->addFlash('notice', 'has been deleted');
+        return $this->redirectToRoute('home');
     }
 }

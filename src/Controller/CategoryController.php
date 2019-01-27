@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Video;
 use App\Form\CategoryAddType;
+use App\Form\UpdateCategoryType;
 use App\Repository\CategoryRepository;
+use App\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,14 +59,48 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/category/{category}", name="categoryId")
-     * @ParamConverter("video", options={"mapping"={"category"="category"}})
+     * @Route("/category/{id}", name="categoryId")
      */
-    public function categoryby(Video $video)
+    public function categoryby(int $id, VideoRepository $videoRepository)
     {
+        $cat = $videoRepository->findBy(['category'=>$id]);
         return $this->render('category/category.html.twig',[
-            'cat'=> $video
+            'cat'=> $cat
         ]);
     }
+
+    /**
+     * @Route("category/update/{id}", name="categoryUpdate")
+     */
+    public function updateCategories(int $id, Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository){
+        $cat = $categoryRepository->find($id);
+
+        $form = $this->createForm(UpdateCategoryType::class, $cat);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $entityManager->persist($cat);
+            $entityManager->flush();
+            return $this->redirectToRoute('detailCategory');
+        }
+        return $this->render('category/updateCategory.html.twig', [
+            'form'=> $form->createView()
+        ]);
+
+    }
+
+    /**
+     * @Route("category/delete/{id}", name="categoryDelete")
+     */
+    public function deleteVideo(Category $category, EntityManagerInterface $entityManager){
+        $video = new Video();
+        $objet = $video->getCategory();
+
+        $entityManager->remove($category);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('detailCategory');
+    }
+
 
 }

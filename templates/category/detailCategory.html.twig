@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <div class="container">
-        <a href="{{ path('addCategory') }}">Ajouter une catégorie</a>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Id</th>
                     <th>Nom de la catégorie</th>
                     <th>Description de la catégorie (optionnel)</th>
+                    <th>Modifier</th>
+                    <th>Supprimer</th>
                 </tr>
             </thead>
             <tbody>
@@ -16,6 +17,8 @@
                         <td>{{ i.id }}</td>
                         <td>{{ i.name }}</td>
                         <td>{{ i.description }}</td>
+                        <td><a href="{{ path('categoryUpdate', {"id": i.id}) }}">Modifier</a></td>
+                        <td><a href="{{ path('categoryDelete', {"id": i.id}) }}">Supprimer</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

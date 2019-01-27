@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container">
         <div class="starter-template">
-            <h1>Bienvenue sur la page</h1>
+            <h2>Bienvenue</h2>
 
             <table class="table table-striped">
                 <thead>
@@ -27,13 +27,21 @@
                             <td>{{ i.description }}</td>
                             <td><a href="{{ i.url }}">{{ i.url }}</a></td>
                             <td>{{ i.dateCreation.date }}</td>
-                            <td><a href="{{ path('categoryId',{'category':i.category.id}) }}">{{ i.category.name }}</a></td>
-                            <td><a href="{{ path('profileId', {'id':i.user.id}) }}">{{ i.user.firstname }}</a></td>
-                            {%  if is_granted('IS_AUTHENTICATED_FULLY') and app.user.id == i.user.id  %}
-                                <td><a href="{{ path('deleteVideo', {'id': i.id}) }}">Supprimer</a></td>
-                            {%  else %}
-                                <td>Impossible de supprimer vu que vous n'êtes pas le créateur</td>
+                            <td><a href="{{ path('categoryId',{'id':i.category.id}) }}">{{ i.category.name }}</a></td>
+                            {% if i.user.id is defined %}
+                                <td><a href="{{ path('profileId', {'id':i.user.id}) }}">{{ i.user.firstname }}</a></td>
+                                {%  if is_granted('IS_AUTHENTICATED_FULLY') and app.user.id == i.user.id or is_granted('IS_AUTHENTICATED_FULLY') and app.user.roles[0] == "ROLE_ADMIN" %}
+                                    <td><a href="{{ path('deleteVideo', {'id': i.id}) }}">Supprimer</a></td>
+                                {%  else %}
+                                    <td>Impossible de supprimer vu que vous n'êtes pas le créateur</td>
+                                {% endif %}
+                            {% else %}
+                                <td>Sans auteur</td>
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') and app.user.roles[0] == "ROLE_ADMIN" %}
+                                    <td><a href="{{ path('deleteVideo', {'id': i.id}) }}">Supprimer</a></td>
+                                {% endif %}
                             {% endif %}
+
                             {{ dump(i) }}
                         </tr>
                     {% endif %}
@@ -51,7 +59,7 @@
                 <tbody>
                     {% for p in cat %}
                         <tr>
-                            <td><a href="{{ path('categoryId', {'category':p.id}) }}">{{ p.name }}</a></td>
+                            <td><a href="{{ path('categoryId', {'id':p.id}) }}">{{ p.name }}</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
